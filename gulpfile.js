@@ -80,6 +80,7 @@ var injectInclude = [
 	'messaging_inject.js',
 	'inject/progressWindow_inject.js',
 	'inject/modalPrompt_inject.js',
+	'save_query/save_query.js',
 	'i18n.js'
 ];
 var injectIncludeLast;
@@ -188,7 +189,7 @@ function processFile() {
 			}
 		}
 		var type = parts[i];
-		
+
 		if (ext == 'jsx') {
 			try {
 				file.contents = new Buffer(
@@ -206,10 +207,10 @@ function processFile() {
 			parts[parts.length-1] = basename = basename.substr(0, basename.length-1);
 			ext = 'js';
 		}
-		
+
 		var addFiles = function(file) {
 			var f;
-			
+
 			// Amend paths
 			if (type === 'common' || type === 'browserExt') {
 				if (file.path.includes('.html')) {
@@ -235,7 +236,7 @@ function processFile() {
 			}
 			if (type === 'zotero-google-docs-integration') {
 				f = file.clone({contents: false});
-				f.path = parts.slice(0, i-1).join('/') + '/build/safari.safariextension/zotero-google-docs-integration/' 
+				f.path = parts.slice(0, i-1).join('/') + '/build/safari.safariextension/zotero-google-docs-integration/'
 					+ parts.slice(i+3).join('/');
 				console.log(`-> ${f.path.slice(f.cwd.length)}`);
 				this.push(f);
@@ -249,7 +250,7 @@ function processFile() {
 			}
 			cb();
 		}.bind(this);
-		
+
 		var asyncAddFiles = false;
 		// Replace contents
 		switch (basename) {
@@ -287,7 +288,7 @@ function processFile() {
 				break;
 			case 'background.js':
 				file.contents = Buffer.from(file.contents.toString()
-					.replace("/*INJECT SCRIPTS*/", 
+					.replace("/*INJECT SCRIPTS*/",
 						injectIncludeBrowserExt.map((s) => `"${s}"`).join(',\n\t\t')));
 				break;
 			case 'global.html':
@@ -296,7 +297,6 @@ function processFile() {
 				break;
 			case 'preferences.html':
 			case 'progressWindow.html':
-			case 'modalPrompt.html':
 				file.contents = Buffer.from(file.contents.toString()
 					.replace(/<!--BEGIN DEBUG-->([\s\S]*?)<!--END DEBUG-->/g, argv.p ? '' : '$1'));
 				break;
@@ -313,7 +313,7 @@ function processFile() {
 				browserify(file).bundle((err, buf) => {file.contents = buf; addFiles(file)});
 				break;
 		}
-		
+
 		if (!asyncAddFiles) {
 			addFiles(file);
 		}
@@ -353,7 +353,6 @@ gulp.task('process-custom-scripts', function() {
 		'./src/common/node_modules.js',
 		'./src/common/preferences/preferences.html',
 		'./src/common/progressWindow/progressWindow.html',
-		'./src/common/modalPrompt/modalPrompt.html',
 		'./src/common/zotero.js',
 		'./src/common/zotero_config.js',
 		'./src/common/test/**/*',
@@ -361,7 +360,7 @@ gulp.task('process-custom-scripts', function() {
 		'./src/zotero-google-docs-integration/src/connector/**'
 	];
 	if (!argv.p) {
-		sources.push('./src/common/test/**/*.js');	
+		sources.push('./src/common/test/**/*.js');
 	}
 	gulp.src(sources).pipe(plumber())
 		.pipe(processFile())
