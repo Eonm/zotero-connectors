@@ -12,7 +12,7 @@ let confing_url = {
     }).join(" ").replace(/rechercher \([a-z]+\) /, "");
   },
   "^http(s)?:\/\/(www\.)?persee\.fr" : "q",
-  "^http(s)?:\/\/eds\..\.ebscohost\.com\/eds\/results" : "bquery", //() => document.getElementById('SearchTerm1').value,
+  "^http(s)?:\/\/eds\..\.ebscohost\.com\/eds\/results" : "bquery",
   "^http(s)?:\/\/scholar\.google\.([a-z]*?)\/scholar" : () => document.getElementById('gs_hdr_tsi').value,
   "^http(s)?:\/\/(www.)?cairn.info" : () => document.getElementById('compute_search_field').value,
   "^http(s)?:\/\/(www.)?jstor.org" : "Query",
