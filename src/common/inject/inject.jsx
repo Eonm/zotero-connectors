@@ -145,7 +145,7 @@ Zotero.Inject = new function() {
 			}.bind(this));
 			translate.setHandler("itemSaving", function(obj, item) {
         console.log(item);
-        item.tags.push(`📌 query = ${retrieve_query(document.location.href)}`)
+        item.extra = `🔍 ${retrieve_query(document.location.href)}`
 				// this relays an item from this tab to the top level of the window
 				Zotero.Messaging.sendMessage(
 					"progressWindow.itemProgress",
